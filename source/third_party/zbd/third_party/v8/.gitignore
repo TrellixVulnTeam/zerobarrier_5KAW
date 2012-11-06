@@ -1,7 +1,6 @@
 *.a
 *.exe
 *.idb
-*.lib
 *.log
 *.map
 *.mk
