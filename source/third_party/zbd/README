@@ -1,0 +1,47 @@
+Zero Barrier Readme
+-------------------
+
+* What is Zero Barrier?
+  ---------------------
+  Zero Barrier consists of a loose collection of modules that implement 
+  all kinds of useful functionality from memory managment, to profiling, 
+  to networking.
+  
+  It's designed in such a way that you can cherry pick the modules you'd
+  like to integrate into an existing framework. You can also make use of
+  the Zero Barrier framework if you're starting a game from scratch.
+  
+* Availability
+  ------------
+  Zero Barrier is freely available for both academic and commercial purposes.
+  See LICENSE for details.
+
+* Configuration
+  -------------
+  There are a number of compile time configuration options that can be specified.
+  See CONFIG for details.
+  
+* Organization
+  ------------
+  The Zero Barrier codebase is organized in such a way that you can integrate
+  the pieces you're interested in and ignore the ones you're not.
+  
+  If you're planning on using zb_framework then everything is taken care of
+  for you. You just need to the .h and .cc framework files in your
+  project and they'll pull in everything you need. See the zb_framework folder
+  for details on how to use it.
+  
+  Otherwise, you will need to include zbd.h and zbd.c and likely zb_stl.h in your project. After
+  that it's up to you to include the other modules you're interested in.
+  
+  To include a module in your project you just need to include the appropriate
+  zb_*.h and zb_*.cc files. These files will pull in the remaining files they
+  need from internal directories.
+  
+  For example, if you're interested in using zb_math, you would simply need to
+  build zbd.h, zbd.c, zb_math.h, and zb_math.cc. To integrate zb_input after this
+  you'd just need to add zb_input.h and zb_input.cc.
+  
+  Files in the internal directories do not include their own dependencies, so
+  attempting to include these files directly will likely result in build errors.
+  
