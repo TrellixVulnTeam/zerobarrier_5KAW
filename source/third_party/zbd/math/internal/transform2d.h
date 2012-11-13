@@ -76,7 +76,7 @@ class transform2d {
   }
 
   ZB_INLINE void Translate(const vector2d T) {
-    Move(T.x, T.y);
+    Translate(T.x, T.y);
   }
 
   ZB_INLINE void Resize(const f32 sx, const f32 sy) {
