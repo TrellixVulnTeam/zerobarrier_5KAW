@@ -13,6 +13,10 @@ class aabb2d {
   ZB_INLINE aabb2d(const f32 cx, const f32 cy, const f32 ex, const f32 ey) : center(cx, cy), extents(ex, ey) {}
 
   ZB_INLINE aabb2d join(const aabb2d rhs) const {
+    if (center == vector2d::Zero && extents == vector2d::Zero) {
+      return rhs;
+    }
+
     const vector2d minA = center - extents;
     const vector2d maxA = center + extents;
     const vector2d minB = rhs.center - rhs.extents;
@@ -23,15 +27,6 @@ class aabb2d {
     const vector2d extent = (maxFinal - minFinal) / 2.0f;
     
     return aabb2d(minFinal + extent, extent);
-  }
-
-  ZB_INLINE aabb2d joinUninitialized(const aabb2d rhs) const {
-    if (center == vector2d::Zero && extents == vector2d::Zero) {
-      return rhs;
-    }
-    else {
-      return join(rhs);
-    }
   }
 
   vector2d center, extents;

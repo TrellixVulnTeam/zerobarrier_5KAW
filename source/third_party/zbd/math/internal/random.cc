@@ -75,9 +75,19 @@ f32 MersenneTwister::Gaussian(void) {
 
 f32 MersenneTwister::RandFGaussian(f32 min, f32 max, f32 deviations) {
   defend (max >= min);
+  defend (deviations > 0.0f);
 
-  const f32 g = (Gaussian() + deviations) / (2.0f * deviations);  
-  const f32 value = min + g * (max - min);
+  // To modify a normal distribution to have a mean M and deviation S
+  // multiply by S and add M.
+
+  // Here, we want to get a distribution that is [0,1] and multiply that
+  // by the specified range. Since the distribution is theoretically infinite,
+  // we allow the number of valid deviations out to be specified.
+
+  const f32 halfWidth = (max - min) / 2.0f; // Compute the half-width of the interval.
+  const f32 M = min + halfWidth;            // Mean directly in the middle of max and min.
+  const f32 S = halfWidth / deviations;     // Compute the new standard deviation using the half-width.      
+  const f32 value = Guassian() * S + M;
   return clamp(value, min, max);
 }
 

@@ -18,7 +18,7 @@ ZB_INLINE T smoother_step(T start, T stop, T x) {
 }
 
 template<typename T, typename U> 
-ZB_INLINE T smoother_lerp(T start, T stop, U tstart, U tstop, U t) {
+ZB_INLINE T smoothstep(T start, T stop, U tstart, U tstop, U t) {
   return lerp<T,U>(start, stop, smoother_step<U>(tstart, tstop, t));
 }
 

@@ -70,6 +70,26 @@ class transform2d {
     Rotate(ComplexFromRadians(r));
   }
 
+  ZB_INLINE void Translate(const f32 x, const f32 y) {
+    translation[0] += x;
+    translation[1] += y;
+  }
+
+  ZB_INLINE void Translate(const vector2d T) {
+    Move(T.x, T.y);
+  }
+
+  ZB_INLINE void Resize(const f32 sx, const f32 sy) {
+    const vector2d scale = GetScale();
+    defend (scale.x != 0.0f);
+    defend (scale.y != 0.0f);
+    Scale(sx / scale.x, sy / scale.y);
+  }
+
+  ZB_INLINE void Resize(const vector2d S) {
+      Resize(S.x, S.y);
+  }
+
   ZB_INLINE void Orient(const complex R) {
     const f32 scaleX = vector2d(matrix[0], matrix[1]).Length();
     const f32 scaleY = vector2d(matrix[2], matrix[3]).Length();
@@ -84,18 +104,13 @@ class transform2d {
     Orient(ComplexFromRadians(r));
   }
 
-  ZB_INLINE void Move(const f32 x, const f32 y) {
-    translation[0] += x;
-    translation[1] += y;
-  }
-
-  ZB_INLINE void Move(const vector2d T) {
-    Move(T.x, T.y);
+  ZB_INLINE void Place(const f32 x, const f32 y) {
+    translation[0] = x;
+    translation[1] = y;
   }
 
   ZB_INLINE void Place(const vector2d T) {
-    translation[0] = T.x;
-    translation[1] = T.y;
+    Place(T.x, T.y);
   }
 
   ZB_INLINE vector2d GetTranslation(void) const {
@@ -138,6 +153,13 @@ class transform2d {
 
   ZB_INLINE vector2d TransformVector(const vector2d vector) const {
     return vector2d(vector.x*matrix[0] + vector.y*matrix[1], vector.x*matrix[2] + vector.y*matrix[3]);
+  }
+
+  ZB_INLINE vector2d TransformNormal(const vector2d normal) const {
+    const f32 det = matrix[0]*matrix[3] - matrix[1]*matrix[2];
+    defend (det != 0.0f);
+
+    return vector2d((normal.x*matrix[3] - normal.y*matrix[2]) / det, (normal.y*matrix[0] - normal.x*matrix[1]) / det);
   }
 
   ZB_INLINE transform2d Inverse(void) const {
