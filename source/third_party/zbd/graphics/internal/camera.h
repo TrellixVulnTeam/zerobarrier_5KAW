@@ -6,26 +6,26 @@
 
 ZB_NAMESPACE_BEGIN
 
-class Camera {
+class Camera2d {
 public:
-  Camera(void);
+  Camera2d(void);
 
-  void Initialize(f32 width, f32 height, f32 minDepth, f32 maxDepth);
-
-  vector3d GetLocation(void) const;
+  void Initialize(const aabb2d &viewport, f32 minDepth, f32 maxDepth);
 
   void SetLocation(const vector3d &location);
   void SetLocation(const vector2d &location);
   void SetOrientation(const complex &orientation);
+  void SetViewport(const aabb2d &viewport);
   void SetZoom(const f32 zoom);
 
   void Move(const vector3d &delta);
   void Rotate(const complex &rotation);
   void Zoom(const f32 zoom_delta);
 
-  f32 GetWidth(void) const;
-  f32 GetHeight(void) const;
+  vector3d GetLocation(void) const;
   f32 GetZoom(void) const;
+  const aabb2d& GetViewport(void) const;
+  vector2d ViewportToWorld(vector2d position);
 
   void OrthoProjection(void);
   void FinalizeMatrices(void);
@@ -38,13 +38,12 @@ public:
 private:
   vector3d location;
   complex orientation;
-  f32 width;
-  f32 height;
-  f32 min_depth;
-  f32 max_depth;
+  aabb2d viewport;
+  f32 minDepth;
+  f32 maxDepth;
   f32 zoom;
-  bool view_dirty;
-  bool projection_dirty;
+  bool viewDirty;
+  bool projectionDirty;
 };
 
 ZB_NAMESPACE_END

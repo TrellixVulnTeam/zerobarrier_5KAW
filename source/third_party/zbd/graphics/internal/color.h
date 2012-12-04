@@ -15,6 +15,8 @@ public:
   bool operator==(const Color &rhs) const;
   bool operator!=(const Color &rhs) const;
 
+  u32 ToU32(void) const;
+
   f32 r, g, b, a;
 
   const static Color White;

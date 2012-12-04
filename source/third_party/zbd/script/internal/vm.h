@@ -23,8 +23,8 @@ public:
   VM(void);
 
   void Initialize(void);
-  void Shutdown(void);
   void Reset(void);
+  void Shutdown(void);
 
   bool Execute(const char *script, const char *name, VMError *errorOut);
   bool Call(const char *globalFunctionName, int argc, v8::Handle<v8::Value> argv[], VMError *errorOut); // Must be inside a VMScope and v8::HandleScope.
@@ -43,6 +43,9 @@ public:
   void EnableDebugging(const char *name, i32 port);
   void DisableDebugging(void);
 
+  void TryCollectGarbage(i32 hint);
+  void ForceCollectGarbage(void);
+
   // Data.
   v8::Isolate *isolate;
   v8::Persistent<v8::Context> context;
@@ -59,16 +62,20 @@ public:
 void V8StackTraceToString(v8::Handle<v8::StackTrace> trace, zbstring &stringOut);
 void V8PopulateErrorMessage(const v8::TryCatch &tryCatch, bool syntaxError, VMError *errorOut);
 
-#if !defined(ZB_DISABLE_VM_CHECKS)  
+#if !defined(ZB_DISABLE_VM_CHECKS)
 #define defend_vm(condition) ZB_MULTI_LINE_MACRO_BEGIN \
   if (!(condition)) { \
     return v8::ThrowException(v8::String::New("Failed: " #condition)); \
   } \
   ZB_ASSUME(condition); \
 ZB_MULTI_LINE_MACRO_END
+
+#define verify_vm(condition) defend_vm(condition)
 #else
 #define defend_vm(condition) ZB_MULTI_LINE_MACRO_BEGIN \
   ZB_ASSUME(condition); \
   banish(condition); \
 ZB_MULTI_LINE_MACRO_END
+
+#define verify_vm(condition) condition
 #endif

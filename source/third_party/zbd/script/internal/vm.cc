@@ -21,9 +21,16 @@ void VM::Initialize(void) {
 
   isolate = v8::Isolate::New();
   v8::Isolate::Scope isoScope(isolate);
-  context = v8::Context::New();
-
   v8::V8::SetCaptureStackTraceForUncaughtExceptions(true);
+  
+  // Exposing this changes the behavior of v8::V8::IdleNotification
+  // in addition to adding 'gc' to the global javascript object.
+  // The behavior change seems to affect being able to force
+  // a garbage collect by calling v8::V8::IdleNotification.
+  const char *flags = "--expose-gc";
+  v8::V8::SetFlagsFromString(flags, strlen(flags));
+
+  context = v8::Context::New();
 }
 
 void VM::Reset(void) {
@@ -35,10 +42,40 @@ void VM::Shutdown(void) {
     isolate->Enter();
   }
 
-  returnValue.Dispose();
-  returnValue.Clear();
-  context.Dispose();
-  context.Clear();
+  if (!returnValue.IsEmpty()) {
+    returnValue.Dispose();
+    returnValue.Clear();
+  }
+  
+  // This is a bit of a hack.
+  // The context isn't being garbage collected on shutdown (god knows why)
+  // It's possible that it's a bug on my end, with reference counting or something.
+  // Until that's sorted, go through and nuke all the objects in the context so that
+  // at least all the c++ objects get free'd.
+  if (!context.IsEmpty()) {
+    v8::Context::Scope contextScope(context);
+    v8::HandleScope handleScope;
+
+    v8::Local<v8::Object> global = context->Global();
+
+    // Grab the 'gc' object. Do this because the next couple lines nuke
+    // all references from the global object.
+    v8::Local<v8::Object> gc = context->Global()->Get(v8::String::New("gc"))->ToObject();
+
+    v8::Local<v8::Array> names = global->GetPropertyNames();
+    u32 propCount = names->Length();
+    for (u32 i = 0; i < propCount; ++i) {
+      v8::Local<v8::Value> key = names->Get(i);  
+      global->Set(key, v8::Null());
+    }
+
+    // Call the gc, a bunch.
+    for (int i = 0; i < 25; ++i)
+      v8::Handle<v8::Function>::Cast(gc)->Call(gc, 0, 0x0);
+
+    context.Dispose();
+    context.Clear();
+  }
 
   if (isolate) {
     isolate->Exit();
@@ -52,8 +89,10 @@ bool VM::Execute(const char *script, const char *name, VMError *errorOut) {
   v8::Context::Scope contextScope(context);
 
   v8::TryCatch tryCatch;
-  returnValue.Dispose();
-  returnValue.Clear();
+  if (!returnValue.IsEmpty()) {
+    returnValue.Dispose();
+    returnValue.Clear();
+  }
 
   bool syntaxError = false;
   v8::HandleScope handleScope;
@@ -118,8 +157,10 @@ v8::Handle<v8::Object> VM::Require(const char *script, const char *name) {
 
 bool VM::Call(const char *globalFunctionName, int argc, v8::Handle<v8::Value> argv[], VMError *errorOut) {
   v8::TryCatch tryCatch;
-  returnValue.Dispose();
-  returnValue.Clear();
+  if (!returnValue.IsEmpty()) {
+    returnValue.Dispose();
+    returnValue.Clear();
+  }
 
   v8::Local<v8::Object> function = context->Global()->Get(v8::String::New(globalFunctionName))->ToObject();
   const bool validFunction = !function.IsEmpty() && function->IsFunction() && !tryCatch.HasCaught();
@@ -172,6 +213,10 @@ void VM::Enter(void) {
 void VM::Exit(void) {
   context->Exit();
   isolate->Exit();
+}
+
+void VM::TryCollectGarbage(i32 hint) {
+  while (!v8::V8::IdleNotification(hint));
 }
 
 void V8StackTraceToString(v8::Handle<v8::StackTrace> trace, zbstring &stringOut) {

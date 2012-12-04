@@ -17,17 +17,23 @@ class aabb2d {
       return rhs;
     }
 
-    const vector2d minA = center - extents;
-    const vector2d maxA = center + extents;
-    const vector2d minB = rhs.center - rhs.extents;
-    const vector2d maxB = rhs.center + rhs.extents;
+    const vector2d minA = min();
+    const vector2d maxA = max();
+    const vector2d minB = rhs.min();
+    const vector2d maxB = rhs.max();
 
-    const vector2d minFinal(min(minA.x, minB.x), min(minA.y, minB.y));
-    const vector2d maxFinal(max(maxA.x, maxB.x), max(maxA.y, maxB.y));
+    const vector2d minFinal(::min(minA.x, minB.x), ::min(minA.y, minB.y));
+    const vector2d maxFinal(::max(maxA.x, maxB.x), ::max(maxA.y, maxB.y));
     const vector2d extent = (maxFinal - minFinal) / 2.0f;
     
     return aabb2d(minFinal + extent, extent);
   }
+
+  ZB_INLINE f32 width(void) const { return extents.x * 2.0f; }
+  ZB_INLINE f32 height(void) const { return extents.y * 2.0f; }
+
+  ZB_INLINE vector2d min(void) const { return center - extents; }
+  ZB_INLINE vector2d max(void) const { return center + extents; }
 
   vector2d center, extents;
 };

@@ -9,7 +9,7 @@ global.config = (path) ->  configs[path] ?= JSON.readfile('config/' + path + '.j
 
 global.log = (message) -> VM.log(message)
 
-global.gc = (hint) -> VM.collectGarbage(hint)
+global.tryGC = (hint) -> VM.collectGarbage(hint)
 
 global.Debugger = {
   "tick" : () -> 
@@ -17,5 +17,10 @@ global.Debugger = {
 
 VM.tick = () ->
   Debugger.tick()
-  gc()
+  tryGC()
   return null
+
+global.help = (obj) ->
+  for key, value of obj
+    log(key + ":")
+    log(value + "\n")

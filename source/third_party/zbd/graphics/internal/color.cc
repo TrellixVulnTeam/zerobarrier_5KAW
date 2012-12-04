@@ -45,4 +45,8 @@ bool Color::operator!=(const Color &rhs) const {
   return !(*this == rhs);
 }
 
+u32 Color::ToU32(void) const {
+  return 0;
+}
+
 ZB_NAMESPACE_END

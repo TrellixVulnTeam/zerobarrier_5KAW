@@ -31,6 +31,7 @@ ZB_NAMESPACE_BEGIN
 #define zbhashmap(...) stdext::hash_map<__VA_ARGS__> 
 #define zbmin(...) std::min(__VA_ARGS__)
 #define zbmax(...) std::max(__VA_ARGS__)
+#define zbswap(...) std::swap(__VA_ARGS__)
 
 typedef std::string zbstring;
 typedef std::wstring zbwstring;

@@ -68,8 +68,9 @@ namespace VMBindings {
       hint = args[0]->Int32Value(); 
     }
 
-    while (!v8::V8::IdleNotification(hint));
-
+    VM *vm = (VM*)v8::External::Unwrap(args.This()->GetInternalField(0));
+    vm->TryCollectGarbage(hint);
+    
     return v8::Undefined();
   }
 
