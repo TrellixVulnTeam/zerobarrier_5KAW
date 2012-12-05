@@ -16,6 +16,7 @@
 #include "../controls/controls_v8_bindings.cc"
 #include "internal/os_win32_v8_bindings.cc"
 #include "../graphics/graphics_v8_bindings.cc"
+#include "../time/time_v8_bindings.cc"
 
 void ReportVMError(const VMError &errors) {
   zb_spam("Script Error: %s(%d) -- %s\n%s", errors.file.c_str(), errors.line, errors.message.c_str(), errors.callstack.c_str());
@@ -50,6 +51,7 @@ void Launch(OS *os) {
     AddVMBindings(&vm);
     AddJSONBindings(&vm);
     AddOSBindings(&vm, os);
+    AddTimeBindings(&vm);
     AddControlsBindings(&vm, &controls);
     AddGraphicsBindings(&vm);
 
@@ -72,6 +74,8 @@ void Launch(OS *os) {
     vm.DisableDebugging();
   } while (vm.ReturnValueToString() == "false");
   
+  // Re-enable debugging to work around a crash in V8 on garbage collection.
+  vm.EnableDebugging("client", 5858);
   vm.Shutdown();
 
   renderThread.stop();

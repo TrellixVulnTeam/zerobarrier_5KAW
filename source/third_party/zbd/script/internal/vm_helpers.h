@@ -55,9 +55,18 @@ ZB_INLINE bool ReadI32(const v8::Arguments& args, i32 index, i32 *iOut) {
   return false;
 }
 
-ZB_INLINE bool ReadFloat(const v8::Arguments& args, i32 index, f32 *fOut) {
+ZB_INLINE bool ReadF32(const v8::Arguments& args, i32 index, f32 *fOut) {
   if (index < args.Length() && args[index]->IsNumber()) {
     *fOut = (f32)args[index]->NumberValue();
+    return true;
+  }
+
+  return false;
+}
+
+ZB_INLINE bool ReadF64(const v8::Arguments& args, i32 index, f64 *fOut) {
+  if (index < args.Length() && args[index]->IsNumber()) {
+    *fOut = args[index]->NumberValue();
     return true;
   }
 

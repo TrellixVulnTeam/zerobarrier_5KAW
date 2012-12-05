@@ -5,19 +5,13 @@ global.require = (path) -> modules[path] ?= vmLoadFile(path)
 global.reload = (path) -> modules[path] = vmLoadFile(path)
 
 configs = []
-global.config = (path) ->  configs[path] ?= JSON.readfile('config/' + path + '.json')
+global.config = (path) -> configs[path] ?= JSON.readfile('config/' + path + '.json')
 
 global.log = (message) -> VM.log(message)
 
-global.tryGC = (hint) -> VM.collectGarbage(hint)
-
-global.Debugger = {
-  "tick" : () -> 
-}
-
 VM.tick = () ->
-  Debugger.tick()
-  tryGC()
+  @processDebugMessages()
+  @collectGarbage()
   return null
 
 global.help = (obj) ->

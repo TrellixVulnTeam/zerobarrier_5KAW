@@ -15,6 +15,8 @@ Game =
     @tValue = 0
     @direction = 1
 
+    @startTime = TIME.stamp()
+
     help(GFX)
     null
 

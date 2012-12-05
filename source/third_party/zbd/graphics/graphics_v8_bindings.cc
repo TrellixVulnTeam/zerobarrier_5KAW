@@ -100,10 +100,10 @@ namespace GraphicsBindings {
     verify_vm(ReadColor(args, 4, &color));
 
     f32 arrowLength = 0.0f;
-    verify_vm(ReadFloat(args, 8, &arrowLength));
+    verify_vm(ReadF32(args, 8, &arrowLength));
 
     f32 arrowAngle = 0.0f;
-    verify_vm(ReadFloat(args, 9, &arrowAngle));
+    verify_vm(ReadF32(args, 9, &arrowAngle));
 
     Draw::Arrow(start, end, color, arrowLength, arrowAngle);
     return v8::Undefined();
@@ -154,7 +154,7 @@ namespace GraphicsBindings {
     verify_vm(ReadVector2d(args, 0, &center));
 
     f32 radius = 0.0f;
-    verify_vm(ReadFloat(args, 2, &radius));
+    verify_vm(ReadF32(args, 2, &radius));
 
     i32 n = 0;
     verify_vm(ReadI32(args, 3, &n));
@@ -163,7 +163,7 @@ namespace GraphicsBindings {
     verify_vm(ReadColor(args, 4, &color));
 
     f32 orientation = 0.0f;
-    verify_vm(ReadFloat(args, 8, &orientation));
+    verify_vm(ReadF32(args, 8, &orientation));
 
     bool fill = false;
     verify_vm(ReadBool(args, 9, &fill));
@@ -204,10 +204,10 @@ namespace GraphicsBindings {
     defend_vm(viewport.height() > 0);
 
     f32 minDepth = 0.0f;
-    verify_vm(ReadFloat(args, 4, &minDepth));
+    verify_vm(ReadF32(args, 4, &minDepth));
 
     f32 maxDepth = 0.0f;
-    verify_vm(ReadFloat(args, 5, &maxDepth));
+    verify_vm(ReadF32(args, 5, &maxDepth));
     defend_vm(minDepth <= maxDepth);
 
     Camera2d *camera = VMGetObject<Camera2d>(args.This(), Camera2dClassId);

@@ -19,7 +19,7 @@ void OSWin32::Initialize(HINSTANCE instance, const zbstring &commandline, i32 co
 }
 
 void OSWin32::Boot(void) {
-  // Do nothing.
+  zb_time::Initialize();
 }
 
 void OSWin32::InitializeView(i32 width, i32 height) {

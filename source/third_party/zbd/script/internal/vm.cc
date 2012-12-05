@@ -40,6 +40,7 @@ void VM::Reset(void) {
 void VM::Shutdown(void) {
   if (isolate) {
     isolate->Enter();
+    //DisableDebugging();
   }
 
   if (!returnValue.IsEmpty()) {

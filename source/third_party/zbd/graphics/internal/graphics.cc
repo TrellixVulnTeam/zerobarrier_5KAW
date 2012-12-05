@@ -213,7 +213,6 @@ void RenderThread::createDefaultResources(void) {
 }
 
 u32 RenderThread::main(void) {
-  //initialize();
   createDefaultResources();
 
   while (ThreadContext::main()) {
