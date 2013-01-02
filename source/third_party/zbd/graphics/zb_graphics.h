@@ -19,4 +19,6 @@
 #include "internal/camera.h"
 #include "internal/color.h"
 #include "internal/word_aligned_buffer.h"
+#include "internal/default_resources.h"
 #include "internal/graphics.h"
+#include "internal/font.h"

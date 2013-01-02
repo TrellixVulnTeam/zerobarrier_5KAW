@@ -58,9 +58,18 @@ namespace GraphicsBindings {
     return v8::Undefined();
   }
 
+  v8::Handle<v8::Value> setTechnique(const v8::Arguments &args) {
+    defend_vm(args.Length() == 1);
+    i32 techniqueIndex = 0;
+    verify_vm(ReadI32(args, 0, &techniqueIndex));
+
+    RENDERTHREAD->SetTechnique(techniqueIndex);
+    return v8::Undefined();
+  }
+
   v8::Handle<v8::Value> point(const v8::Arguments &args) {
     defend_vm(args.Length() == 6);
-    
+
     vector2d point;
     verify_vm(ReadVector2d(args, 0, &point));
 
@@ -73,7 +82,7 @@ namespace GraphicsBindings {
 
   v8::Handle<v8::Value> line(const v8::Arguments &args) {
     defend_vm(args.Length() == 8);
-    
+
     vector2d start;
     verify_vm(ReadVector2d(args, 0, &start));
 
@@ -89,7 +98,7 @@ namespace GraphicsBindings {
 
   v8::Handle<v8::Value> arrow(const v8::Arguments &args) {
     defend_vm(args.Length() == 10);
-    
+
     vector2d start;
     verify_vm(ReadVector2d(args, 0, &start));
 
@@ -111,7 +120,7 @@ namespace GraphicsBindings {
 
   v8::Handle<v8::Value> triangle(const v8::Arguments &args) {
     defend_vm(args.Length() == 11);
-    
+
     vector2d a;
     verify_vm(ReadVector2d(args, 0, &a));
 
@@ -133,7 +142,7 @@ namespace GraphicsBindings {
 
   v8::Handle<v8::Value> rect(const v8::Arguments &args) {
     defend_vm(args.Length() == 9);
-    
+
     aabb2d rect;
     verify_vm(ReadAABB2d(args, 0, &rect));
 
@@ -149,7 +158,7 @@ namespace GraphicsBindings {
 
   v8::Handle<v8::Value> ngon(const v8::Arguments &args) {
     defend_vm(args.Length() == 10);
-    
+
     vector2d center;
     verify_vm(ReadVector2d(args, 0, &center));
 
@@ -169,6 +178,44 @@ namespace GraphicsBindings {
     verify_vm(ReadBool(args, 9, &fill));
 
     Draw::Ngon(center, radius, n, color, orientation, fill);
+    return v8::Undefined();
+  }
+
+  v8::Handle<v8::Value> textWorld(const v8::Arguments &args) {
+    defend_vm(args.Length() == 8);
+
+    zbstring text;
+    verify_vm(ReadString(args, 0, &text));
+
+    vector2d start;
+    verify_vm(ReadVector2d(args, 1, &start));
+
+    FontHandle font = 0;
+    verify_vm(ReadI32(args, 3, &font));
+
+    Color color;
+    verify_vm(ReadColor(args, 4, &color));
+
+    Draw::TextWorld(text, start, font, color);
+    return v8::Undefined();
+  }
+
+  v8::Handle<v8::Value> textUI(const v8::Arguments &args) {
+    defend_vm(args.Length() == 8);
+
+    zbstring text;
+    verify_vm(ReadString(args, 0, &text));
+
+    vector2d start;
+    verify_vm(ReadVector2d(args, 1, &start));
+
+    FontHandle font = 0;
+    verify_vm(ReadI32(args, 3, &font));
+
+    Color color;
+    verify_vm(ReadColor(args, 4, &color));
+
+    Draw::TextUI(text, start, font, color);
     return v8::Undefined();
   }
 
@@ -251,12 +298,15 @@ void AddGraphicsBindings(VM *vm) {
   v8::Local<v8::ObjectTemplate> graphicsTemplate = v8::ObjectTemplate::New();
   graphicsTemplate->Set(v8::String::New("tick"), v8::FunctionTemplate::New(GraphicsBindings::tick));
   graphicsTemplate->Set(v8::String::New("clear"), v8::FunctionTemplate::New(GraphicsBindings::clear));
+  graphicsTemplate->Set(v8::String::New("setTechnique"), v8::FunctionTemplate::New(GraphicsBindings::setTechnique));
   graphicsTemplate->Set(v8::String::New("point"), v8::FunctionTemplate::New(GraphicsBindings::point));
   graphicsTemplate->Set(v8::String::New("line"), v8::FunctionTemplate::New(GraphicsBindings::line));
   graphicsTemplate->Set(v8::String::New("arrow"), v8::FunctionTemplate::New(GraphicsBindings::arrow));
   graphicsTemplate->Set(v8::String::New("triangle"), v8::FunctionTemplate::New(GraphicsBindings::triangle));
   graphicsTemplate->Set(v8::String::New("rect"), v8::FunctionTemplate::New(GraphicsBindings::rect));
   graphicsTemplate->Set(v8::String::New("ngon"), v8::FunctionTemplate::New(GraphicsBindings::ngon));
+  graphicsTemplate->Set(v8::String::New("textWorld"), v8::FunctionTemplate::New(GraphicsBindings::textWorld));
+  graphicsTemplate->Set(v8::String::New("textUI"), v8::FunctionTemplate::New(GraphicsBindings::textUI));
   graphicsTemplate->Set(v8::String::New("windowWidth"), v8::FunctionTemplate::New(GraphicsBindings::windowWidth));
   graphicsTemplate->Set(v8::String::New("windowHeight"), v8::FunctionTemplate::New(GraphicsBindings::windowHeight));
   graphicsTemplate->Set(v8::String::New("NewCamera"), v8::FunctionTemplate::New(GraphicsBindings::NewCamera));

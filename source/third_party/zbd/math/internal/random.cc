@@ -29,7 +29,7 @@ i32 MersenneTwister::Rand(void) {
     Generate();
   }
 
-  int x = mt[index];
+  i32 x = mt[index];
   index = (index + 1) % mt_size;
 
   x ^= x >> 11;
@@ -69,7 +69,7 @@ f32 MersenneTwister::Gaussian(void) {
   const f32 fac = sqrtf(-2.0f * logf(rsq) / rsq);
   gaussian = v1 * fac;
   gaussianAvailable = true;
-  
+
   return v2 * fac;
 }
 
@@ -86,7 +86,7 @@ f32 MersenneTwister::RandFGaussian(f32 min, f32 max, f32 deviations) {
 
   const f32 halfWidth = (max - min) / 2.0f; // Compute the half-width of the interval.
   const f32 M = min + halfWidth;            // Mean directly in the middle of max and min.
-  const f32 S = halfWidth / deviations;     // Compute the new standard deviation using the half-width.      
+  const f32 S = halfWidth / deviations;     // Compute the new standard deviation using the half-width.
   const f32 value = Gaussian() * S + M;
   return clamp(value, min, max);
 }

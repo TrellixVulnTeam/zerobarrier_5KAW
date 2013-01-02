@@ -22,7 +22,7 @@ void VM::Initialize(void) {
   isolate = v8::Isolate::New();
   v8::Isolate::Scope isoScope(isolate);
   v8::V8::SetCaptureStackTraceForUncaughtExceptions(true);
-  
+
   // Exposing this changes the behavior of v8::V8::IdleNotification
   // in addition to adding 'gc' to the global javascript object.
   // The behavior change seems to affect being able to force
@@ -47,7 +47,7 @@ void VM::Shutdown(void) {
     returnValue.Dispose();
     returnValue.Clear();
   }
-  
+
   // This is a bit of a hack.
   // The context isn't being garbage collected on shutdown (god knows why)
   // It's possible that it's a bug on my end, with reference counting or something.
@@ -66,12 +66,12 @@ void VM::Shutdown(void) {
     v8::Local<v8::Array> names = global->GetPropertyNames();
     u32 propCount = names->Length();
     for (u32 i = 0; i < propCount; ++i) {
-      v8::Local<v8::Value> key = names->Get(i);  
+      v8::Local<v8::Value> key = names->Get(i);
       global->Set(key, v8::Null());
     }
 
     // Call the gc, a bunch.
-    for (int i = 0; i < 25; ++i)
+    for (i32 i = 0; i < 25; ++i)
       v8::Handle<v8::Function>::Cast(gc)->Call(gc, 0, 0x0);
 
     context.Dispose();
@@ -130,7 +130,7 @@ v8::Handle<v8::Object> VM::Require(const char *script, const char *name) {
   global->Set(v8::String::New("global"), newGlobalObj);
   global->Set(v8::String::New("module"), newModuleObj);
   newModuleObj->Set(v8::String::New("exports"), v8::Object::New());
-  
+
   // Call script
   v8::Local<v8::String> source = v8::String::New(script);
   v8::Local<v8::Script> compiledScript = v8::Script::Compile(source, v8::String::New(name));
@@ -151,12 +151,12 @@ v8::Handle<v8::Object> VM::Require(const char *script, const char *name) {
     global->Set(v8::String::New("global"), oldGlobalObj);
     global->Set(v8::String::New("module"), oldModuleObj);
   }
-  
+
   defend(!exports.IsEmpty() && exports->IsObject());
   return exports->ToObject();
 }
 
-bool VM::Call(const char *globalFunctionName, int argc, v8::Handle<v8::Value> argv[], VMError *errorOut) {
+bool VM::Call(const char *globalFunctionName, i32 argc, v8::Handle<v8::Value> argv[], VMError *errorOut) {
   v8::TryCatch tryCatch;
   if (!returnValue.IsEmpty()) {
     returnValue.Dispose();
@@ -216,8 +216,12 @@ void VM::Exit(void) {
   isolate->Exit();
 }
 
-void VM::TryCollectGarbage(i32 hint) {
-  while (!v8::V8::IdleNotification(hint));
+void VM::GarbageCollectFull(void) {
+  while (!v8::V8::IdleNotification(1000));
+}
+
+void VM::GarbageCollectIncremental(i32 hint) {
+  v8::V8::IdleNotification(hint);
 }
 
 void V8StackTraceToString(v8::Handle<v8::StackTrace> trace, zbstring &stringOut) {

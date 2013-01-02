@@ -10,7 +10,7 @@ bool VMRequireFile(const char *filename, VM *vm, VMError *errorsOut) {
     v8::Handle<v8::Object> module = vm->Require(script, filename);
 
     if (tryCatch.HasCaught()) {
-      V8PopulateErrorMessage(tryCatch, false, errorsOut); 
+      V8PopulateErrorMessage(tryCatch, false, errorsOut);
     }
 
     zb_free_file_buffer(script);
@@ -65,12 +65,12 @@ namespace VMBindings {
     i32 hint = 1000;
     if (args[0]->IsInt32())
     {
-      hint = args[0]->Int32Value(); 
+      hint = args[0]->Int32Value();
     }
 
     VM *vm = (VM*)v8::External::Unwrap(args.This()->GetInternalField(0));
-    vm->TryCollectGarbage(hint);
-    
+    vm->GarbageCollectIncremental(hint);
+
     return v8::Undefined();
   }
 
@@ -100,7 +100,7 @@ void AddVMBindings(VM *vm) {
 namespace JSONBindings {
   v8::Handle<v8::Value> readfile(const v8::Arguments &args) {
     defend_vm(args[0]->IsString());
-    
+
     v8::Handle<v8::Value> parsedObject = v8::Null();
 
     char *file = 0x0;
@@ -126,5 +126,5 @@ void AddJSONBindings(VM *vm) {
   v8::HandleScope handleScope;
 
   v8::Local<v8::Object> jsonObj = vm->context->Global()->Get(v8::String::New("JSON"))->ToObject();
-  jsonObj->Set(v8::String::New("readfile"), v8::FunctionTemplate::New(JSONBindings::readfile)->GetFunction()); 
+  jsonObj->Set(v8::String::New("readfile"), v8::FunctionTemplate::New(JSONBindings::readfile)->GetFunction());
 }

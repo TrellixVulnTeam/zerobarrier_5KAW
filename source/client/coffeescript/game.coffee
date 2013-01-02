@@ -25,7 +25,8 @@ Game =
 
     GFX.setCamera(@cameraA)
     GFX.clear(@cameraA, 0, 0.5, 0.5, 1)
-    GFX.ngon(t * 640 - 320, 0, 30, 20, 0, 0, 0.5, 1.0, 0.5 * t * 2.0 * 3.14, true)
+    GFX.setTechnique(0)
+    GFX.ngon(t * 640 - 320, 0, 30, 18 * t + 3, 0, 0, 0.5, 1.0, 0.5 * t * 2.0 * 3.14, true)
     GFX.ngon(t * 640 - 320, 0, 20, 5, 1, 0, 0, (1-t), t * 2.0 * 3.14, true)
     GFX.ngon(t * 640 - 320, 0, 20, 5, 1, 0, 0, t, t * 2.0 * 3.14, false)
     GFX.ngon(t * 640 - 320, 0, 10, 3, 0, 1, 0, t, 2.0 * t * 2.0 * 3.14, true)
@@ -40,10 +41,16 @@ Game =
 
     GFX.setCamera(@cameraB)
     GFX.clear(@cameraB, 0.5, 0.0, t*0.5, 1)
-    
+    GFX.setTechnique(1)
+    GFX.textWorld("Welcome to the Slam Jam!", -320, 180, 1, 0.0, 0.0, 0.0, 0.2 + (1-t) * 0.8)
+    GFX.textWorld("Real Time: " + TIME.stamp(), -320, 167, 1, 1.0, 1.0, 0.0, 1.0)
+    GFX.textWorld("Zooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom", -320, 154, 1, 0.0, 1.0, 0.0, 1.0)
+
     @tValue += @direction
     if @tValue <= @tStart or @tValue >= @tEnd
       @direction *= -1
+
+    PROF.draw(@cameraA)
 
     null
   hasQuit: () -> false

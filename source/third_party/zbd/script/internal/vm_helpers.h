@@ -33,7 +33,7 @@ template <typename T> v8::Handle<v8::Object> AllocateVMObject(v8::Handle<v8::Obj
   v8::Handle<v8::Object> objHandle = obj->NewInstance();
   objHandle->SetInternalField(0, v8::External::New(data));
   objHandle->SetInternalField(1, v8::External::New((void*)objHandle->Get(v8::String::New("cppHash"))->Int32Value()));
- 
+
   v8::Persistent<v8::Object> persistentHandle = v8::Persistent<v8::Object>::New(objHandle);
   persistentHandle.MakeWeak(data, &DeallocateVMObject<T>);
 
@@ -76,6 +76,15 @@ ZB_INLINE bool ReadF64(const v8::Arguments& args, i32 index, f64 *fOut) {
 ZB_INLINE bool ReadBool(const v8::Arguments& args, i32 index, bool *bOut) {
   if (index < args.Length() && args[index]->IsBoolean()) {
     *bOut = args[index]->BooleanValue();
+    return true;
+  }
+
+  return false;
+}
+
+ZB_INLINE bool ReadString(const v8::Arguments& args, i32 index, zbstring *sOut) {
+  if (index < args.Length()) {
+    *sOut = *v8::String::AsciiValue(args[index]);
     return true;
   }
 

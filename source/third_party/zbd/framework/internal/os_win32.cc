@@ -24,7 +24,7 @@ void OSWin32::Boot(void) {
 
 void OSWin32::InitializeView(i32 width, i32 height) {
   const TCHAR *className = TEXT("zb_view");
-  
+
   WNDCLASS windowClass = {0};
   windowClass.style = CS_VREDRAW | CS_HREDRAW | CS_OWNDC;
   windowClass.lpfnWndProc = &static_window_procedure;
@@ -92,7 +92,7 @@ void OSWin32::Tick(void) {
 
   BYTE keyStates[256];
   if (GetKeyboardState(keyStates)) {
-    for (int i = 0; i < 256; ++i) {
+    for (i32 i = 0; i < 256; ++i) {
       controls->SetKeyState(i, (keyStates[i] & 0x80) != 0);
     }
   }
@@ -110,7 +110,7 @@ LRESULT CALLBACK OSWin32::static_window_procedure(HWND hwnd, UINT msg, WPARAM wp
     ShowWindow(self->hwnd, self->commandShow);
   }
   else {
-    // Grab the instance that was stored previously.  
+    // Grab the instance that was stored previously.
     self = reinterpret_cast<OSWin32*>(LongToPtr(GetWindowLongPtr(hwnd, GWLP_USERDATA)));
     if (self == 0) { return DefWindowProc(hwnd, msg, wparam, lparam); }
   }
@@ -121,7 +121,7 @@ LRESULT CALLBACK OSWin32::static_window_procedure(HWND hwnd, UINT msg, WPARAM wp
 
 LRESULT OSWin32::window_procedure(UINT msg, WPARAM wparam, LPARAM lparam) {
   switch (msg) {
-    case WM_CHAR:         
+    case WM_CHAR:
     {
       zbwstring wString;
       wString += (wchar_t)wparam;

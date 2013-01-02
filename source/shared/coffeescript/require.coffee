@@ -11,7 +11,7 @@ global.log = (message) -> VM.log(message)
 
 VM.tick = () ->
   @processDebugMessages()
-  @collectGarbage()
+  @collectGarbage(20)
   return null
 
 global.help = (obj) ->

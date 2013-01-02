@@ -13,11 +13,11 @@ public:
   DefragmentingAllocator(void);
 
   void initialize(void *pool, size_t size, size_t handleCount);
-  
+
   Handle allocate(int size);
   Handle allocate_handle(void *p);
   void deallocate(Handle h);
-  
+
   void *resolve_handle(Handle h);
 
   void defragment(int maxBlocks);
@@ -51,7 +51,7 @@ void DefragmentingAllocator::initialize(void *pool, size_t size, size_t handleCo
 
   pool_start = pool;
   pool_end = static_cast<char*>(pool) + size;
-  
+
   next_handle_index = 0;
   allocations_start = static_cast<void**>(pool_start) + handleCount;
   next_allocation = allocations_start;
@@ -79,7 +79,7 @@ void *DefragmentingAllocator::resolve_handle(Handle h) {
 Handle DefragmentingAllocator::allocate_handle(void *p) {
   void **handlePool = static_cast<void**>(pool_start);
   const size_t slotCount = static_cast<void**>(allocations_start) - handlePool;
-  
+
   // Search from where we are to the end.
   size_t handleIndex = next_handle_index;
   while (handleIndex < slotCount) {
@@ -105,7 +105,7 @@ Handle DefragmentingAllocator::allocate_handle(void *p) {
 
   Handle newHandle;
   newHandle.owner = this;
-  
+
   if (handlePool[handleIndex] == 0x0) {
     handlePool[handleIndex] = p;
     newHandle.index = handleIndex;
@@ -152,7 +152,7 @@ void DefragmentingAllocator::deallocate_chunk(void *p) {
   int *allocationTag = reinterpret_cast<int*>(reinterpret_cast<unsigned char*>(p) - adjustment) - 1;
   const int allocationSize = *allocationTag;
   //defend (allocationSize > sizeof(int));
-  
+
   *allocationTag = -allocationSize;
 }
 

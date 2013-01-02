@@ -8,3 +8,4 @@
 #include "internal/color.cc"
 #include "internal/word_aligned_buffer.cc"
 #include "internal/graphics.cc"
+#include "internal/font.cc"

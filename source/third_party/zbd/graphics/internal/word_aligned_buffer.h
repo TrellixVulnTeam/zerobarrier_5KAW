@@ -46,6 +46,8 @@ public:
   ZB_INLINE void reset(void); // Resets both reading and writing.
   ZB_INLINE bool reachedEnd(void);  // Indicates reading has reached the end.
 
+  ZB_INLINE void freeMemory(void);
+
   //
   // Convenience
   // 

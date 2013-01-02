@@ -42,6 +42,11 @@ ZB_INLINE void WordAlignedBuffer::reset(void) {
   commands.clear();
 }
 
+ZB_INLINE void WordAlignedBuffer::freeMemory(void) {
+  commands.resize(0);
+  reset();
+}
+
 ZB_INLINE bool WordAlignedBuffer::reachedEnd(void) {
    return (u32)readIndex == commands.size();
 }

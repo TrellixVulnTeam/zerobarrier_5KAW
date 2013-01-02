@@ -27,9 +27,9 @@ public:
   void Shutdown(void);
 
   bool Execute(const char *script, const char *name, VMError *errorOut);
-  bool Call(const char *globalFunctionName, int argc, v8::Handle<v8::Value> argv[], VMError *errorOut); // Must be inside a VMScope and v8::HandleScope.
+  bool Call(const char *globalFunctionName, i32 argc, v8::Handle<v8::Value> argv[], VMError *errorOut); // Must be inside a VMScope and v8::HandleScope.
   bool Call(const char *globalFunctionName, VMError *errorOut); // Handles scopes for you.
-  
+
   v8::Handle<v8::Object> VM::Require(const char *script, const char *name);
 
   zbstring ReturnValueToString(void);
@@ -43,7 +43,8 @@ public:
   void EnableDebugging(const char *name, i32 port);
   void DisableDebugging(void);
 
-  void TryCollectGarbage(i32 hint);
+  void GarbageCollectFull(void);
+  void GarbageCollectIncremental(i32 hint);
   void ForceCollectGarbage(void);
 
   // Data.
