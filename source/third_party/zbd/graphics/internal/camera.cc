@@ -111,11 +111,19 @@ const aabb2d &Camera2d::GetViewport(void) const {
   return viewport;
 }
 
+aabb2d Camera2d::GetViewportWorldBounds(void) {
+  // Construct 2 aabb's out of the diagonals transformed to world space, then join them together.
+  // This is so that a rotated camera will still have a correct bounding area in world space.
+  const aabb2d a = ToAABB2d(segment2d(ViewportToWorld(viewport.min()),
+                                      ViewportToWorld(viewport.max())));
+  const aabb2d b = ToAABB2d(segment2d(ViewportToWorld(viewport.tl()),
+                                      ViewportToWorld(viewport.br())));
+  return a.join(b);
+}
+
 vector2d Camera2d::ViewportToWorld(vector2d position) {
   FinalizeMatrices();
-
-  position -= viewport.center;
-  componentwise_divide(position, viewport.extents);
+  position = componentwise_divide(position, viewport.extents);
 
   D3DXVECTOR4 d3dPosition(position.x - 1.0f, -position.y + 1.0f, 0.0f, 1.0f);
   D3DXVec4Transform(&d3dPosition, &d3dPosition, &ProjectionInverse);

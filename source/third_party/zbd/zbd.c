@@ -140,6 +140,8 @@ i32 zb_stderr_assertion_handler(const char *condition, const char *message, cons
 
 #if defined(ZB_PLATFORM_WINDOWS)
 i32 zb_ods_assertion_handler(const char *condition, const char *message, const char *function, const char *file, i32 line, zb_stack_trace *trace) {
+  char lineNumber[33] = {0};
+  
   silence_unused(function);
   silence_unused(trace);
 
@@ -159,7 +161,6 @@ i32 zb_ods_assertion_handler(const char *condition, const char *message, const c
   OutputDebugStringA(file);
   OutputDebugStringA(":");
 
-  char lineNumber[33] = {0};
   _itoa(line, lineNumber, 10);
   OutputDebugStringA(lineNumber);
 

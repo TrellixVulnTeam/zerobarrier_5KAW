@@ -13,7 +13,7 @@ struct zb_profile_data {
     // Do nothing.
   }
 
-  struct Sample {
+  struct RawSample {
     TimeStamp time;
     const char *name;
     const char *function;
@@ -21,45 +21,68 @@ struct zb_profile_data {
     i32 line;
   };
 
-  struct Statistics {
-    Statistics(void)
-    : lastFrameTime(0)
-    , frameTotal(0.0f)
-    , historyTotal(0.0f)
-    , historyPercentage(0.0f) {
-      memset(frameHistory, 0, sizeof(frameHistory));
+  struct Sample {
+    Sample(const RawSample &raw)
+    : rawSample(raw)
+    , lastFrameTime(0)
+    , inclusiveFrameTotal(0.0f)
+    , exclusiveFrameTotal(0.0f)
+    , inclusiveHistoryTotal(0.0f)
+    , exclusiveHistoryTotal(0.0f) {
+      memset(inclusiveFrameHistory, 0, sizeof(inclusiveFrameHistory));
     }
 
-    TimeStamp lastFrameTime;
-    f32 frameTotal;
-    f32 historyTotal;
-    f32 historyPercentage;
+    RawSample rawSample;
 
-    // Cumulative frame time, based off of 'name'.
-    f32 frameHistory[ZB_PROFILE_FRAME_HISTORY_LENGTH];
+    TimeStamp lastFrameTime;
+    f32 inclusiveFrameTotal;
+    f32 exclusiveFrameTotal;
+    f32 inclusiveHistoryTotal;
+    f32 exclusiveHistoryTotal;
+
+    f32 inclusiveFrameHistory[ZB_PROFILE_FRAME_HISTORY_LENGTH];
+    zbset(Sample*) children;
   };
 
   struct AsciiStringCompare {
-     bool operator()(char const *a, char const *b) {
-        return zbstrcmp(a, b) < 0;
-     }
+    bool operator()(char const *a, char const *b) {
+      return zbstrcmp(a, b) < 0;
+    }
   };
-  typedef zbmap(const char*, Statistics*, AsciiStringCompare) StatisticsMap;
+
+  struct RawSampleCompare {
+    bool operator()(const RawSample &a, const RawSample &b) {
+      if (a.line == b.line) {
+        if (a.name == b.name) {
+          if (a.function == b.function) {
+            return a.file < b.file;
+          }
+          return a.function < b.function;
+        }
+        return a.name < b.name;
+      }
+      return a.line < b.line;
+    }
+  };
+
+  typedef zbmap(RawSample, Sample*, RawSampleCompare) SampleMap;
   typedef zbset(const char*, AsciiStringCompare) StringStorage;
 
   TimeStamp frameStart;
   u32 frameNumber;
   f32 totalHistoryTime;
-  zbvector(Sample) frameSamples;
-  StatisticsMap statistics;
-  zbvector(Sample) sampleHistory[ZB_PROFILE_FRAME_HISTORY_LENGTH];
+
+  zbvector(zb_profile_data::RawSample) frameRawSamples;
+
+  SampleMap samples;
+  zbvector(RawSample) rawSampleHistory[ZB_PROFILE_FRAME_HISTORY_LENGTH];
   StringStorage strings;
 };
 
 void zb_profile_frame_start(void);
-ZB_INLINE void zb_profile_start(const char *name, const char *function, const char *file, i32 line);
-ZB_INLINE void zb_profile_start_store_strings(const char *name);
-ZB_INLINE void zb_profile_stop(void);
+void zb_profile_start(const char *name, const char *function, const char *file, i32 line);
+void zb_profile_start_store_strings(const char *name, const char *function, const char *file, i32 line);
+void zb_profile_stop(void);
 void zb_profile_shutdown(void);
 
 // Automatically profiles the current scope.
@@ -77,14 +100,14 @@ ZB_MULTI_LINE_MACRO_END
 ZB_MULTI_LINE_MACRO_END
 
 #define ProfileStartStoreStrings(name) ZB_MULTI_LINE_MACRO_BEGIN \
-  zb_profile_start_store_strings(name); \
+  zb_profile_start_store_strings(name, ZB_FUNCTION_NAME, ZB_FILE_NAME, ZB_LINE_NUMBER); \
 ZB_MULTI_LINE_MACRO_END
 
 #define ProfileStop() ZB_MULTI_LINE_MACRO_BEGIN \
   zb_profile_stop(); \
 ZB_MULTI_LINE_MACRO_END
 
-#define ProfileScope(name) const zb_profile_scope zbProfileScope##name(name, ZB_FUNCTION_NAME, ZB_FILE_NAME, ZB_LINE_NUMBER)
+#define ProfileScope(name) const zb_profile_scope zbProfileScope(name, ZB_FUNCTION_NAME, ZB_FILE_NAME, ZB_LINE_NUMBER)
 
 #define ProfileShutdown() ZB_MULTI_LINE_MACRO_BEGIN \
   zb_profile_shutdown(); \
@@ -100,6 +123,7 @@ ZB_MULTI_LINE_MACRO_END
 ZB_MULTI_LINE_MACRO_END
 
 #define ProfileStartStoreStrings(name) ZB_MULTI_LINE_MACRO_BEGIN \
+  banish(name);
 ZB_MULTI_LINE_MACRO_END
 
 #define ProfileStop() ZB_MULTI_LINE_MACRO_BEGIN \

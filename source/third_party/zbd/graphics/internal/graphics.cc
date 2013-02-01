@@ -53,7 +53,7 @@ void RenderThread::Initialize(const ViewParameters &viewParams) {
   initialize();
 
   mutex = CreateMutex(0x0, FALSE, 0x0);
-  
+
   // Jumpstart things a bit.
   vertexWriter->reserve(1000*sizeof(DefaultVertex));
   vertexReader->reserve(1000*sizeof(DefaultVertex));
@@ -201,6 +201,7 @@ void RenderThread::initialize(void) {
 }
 
 void RenderThread::setDefaultState(void) {
+  //device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
   device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
   // TODO: Pre-multiplied alpha.
   device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
@@ -607,6 +608,21 @@ namespace Draw {
     verts[1].color = D3DXCOLOR(color.r, color.g, color.b, color.a);
 
     RENDERTHREAD->Draw(PrimitiveType::Line, verts, 2);
+  }
+
+  void ThickLine(const vector2d &a, const vector2d &b, f32 thickness, const Color &color) {
+    vector2d points[4];
+
+    vector2d direction = a - b;
+    vector2d push = vector2d(-direction.y, direction.x).Normal() * thickness / 2.0f;
+
+    points[0] = a + push;
+    points[1] = a - push;
+    points[2] = b + push;
+    points[3] = b - push;
+
+    Triangle(points[0], points[1], points[2], color, true);
+    Triangle(points[1], points[2], points[3], color, true);
   }
 
   void Arrow(const vector2d &start, const vector2d &end, const Color &color, f32 arrowLength, degrees arrowAngle) {

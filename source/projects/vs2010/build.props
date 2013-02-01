@@ -28,10 +28,13 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MinimalRebuild>false</MinimalRebuild>
-      <AdditionalOptions>/analyze %(AdditionalOptions)</AdditionalOptions>
       <UseUnicodeForAssemblerListing>false</UseUnicodeForAssemblerListing>
       <AssemblerListingLocation>
       </AssemblerListingLocation>
+      <StringPooling>true</StringPooling>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
+      <AdditionalOptions>/analyze %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link />
     <PreBuildEvent />
@@ -39,13 +42,13 @@
     <PostBuildEvent />
     <PostBuildEvent />
     <CustomBuildStep>
-      <Command>$(SolutionDir)..\..\client\build_scripts.bat</Command>
+      <Command>$(SolutionDir)../../../build_content.bat --verbose</Command>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Message>Compile Coffeescript</Message>
+      <Message>Baking Muffins...</Message>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Outputs>*.js</Outputs>
+      <Outputs>hacking_vs_to_make_it_run_my_script</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup />

@@ -1,24 +1,22 @@
 
 #include "zb_client_framework.h"
 
-#include "../zbd.c"
-#include "../controls/zb_controls.cc"
-#include "../graphics/zb_graphics.cc"
-#include "../io/zb_io.cc"
-#include "../math/zb_math.cc"
-#include "../profile/zb_profile.cc"
-#include "../script/zb_script.cc"
-#include "../time/zb_time.cc"
-#include "../thread/zb_thread.cc"
+#ifndef ZB_DISABLE_PROFILE_VISUALIZER
+#include "internal/profile_visualizer.cc"
+#endif
+
+Controls *CONTROLS = 0x0;
 
 #include "internal/entry_win32.cc"
 #include "internal/os_win32.cc"
+#include "internal/platform_editor_2d.cc"
 
-#include "../controls/controls_v8_bindings.cc"
-#include "internal/os_win32_v8_bindings.cc"
-#include "../graphics/graphics_v8_bindings.cc"
-#include "../time/time_v8_bindings.cc"
-#include "../profile/profile_v8_bindings.cc"
+#include "internal/v8_bindings/controls_v8_bindings.cc"
+#include "internal/v8_bindings/os_win32_v8_bindings.cc"
+#include "internal/v8_bindings/graphics_v8_bindings.cc"
+#include "internal/v8_bindings/time_v8_bindings.cc"
+#include "internal/v8_bindings/platform_editor_2d_v8_bindings.cc"
+#include "internal/v8_bindings/profile_v8_bindings.cc"
 
 void ReportVMError(const VMError &errors) {
   zb_spam("Script Error: %s(%d) -- %s\n%s", errors.file.c_str(), errors.line, errors.message.c_str(), errors.callstack.c_str());
@@ -26,6 +24,7 @@ void ReportVMError(const VMError &errors) {
 
 void Launch(OS *os) {
   Controls controls;
+  CONTROLS = &controls;
   os->controls = &controls;
 
   ViewParameters vp;
@@ -60,6 +59,7 @@ void Launch(OS *os) {
     AddProfileBindings(&vm);
     AddControlsBindings(&vm, &controls);
     AddGraphicsBindings(&vm);
+    AddPhysicsEditor2dBindings(&vm);
 
     VMRequireFile("js/require.js", &vm, &errors);
     VMRequireFile("js/boot.js", &vm, &errors);

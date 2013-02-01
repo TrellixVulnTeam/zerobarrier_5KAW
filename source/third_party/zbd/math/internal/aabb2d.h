@@ -25,7 +25,7 @@ class aabb2d {
     const vector2d minFinal(::min(minA.x, minB.x), ::min(minA.y, minB.y));
     const vector2d maxFinal(::max(maxA.x, maxB.x), ::max(maxA.y, maxB.y));
     const vector2d extent = (maxFinal - minFinal) / 2.0f;
-    
+
     return aabb2d(minFinal + extent, extent);
   }
 
@@ -34,6 +34,14 @@ class aabb2d {
 
   ZB_INLINE vector2d min(void) const { return center - extents; }
   ZB_INLINE vector2d max(void) const { return center + extents; }
+
+  // These assume a right-handed y-up coordinate system, not sure what else to name them...
+  ZB_INLINE vector2d tl(void) const { return center + vector2d(-extents.x, extents.y); }
+  ZB_INLINE vector2d br(void) const { return center + vector2d(extents.x, -extents.y); }
+  ZB_INLINE f32 left(void) const { return center.x - extents.x; }
+  ZB_INLINE f32 right(void) const { return center.x + extents.x; }
+  ZB_INLINE f32 top(void) const { return center.y + extents.y; }
+  ZB_INLINE f32 bottom(void) const { return center.y - extents.y; }
 
   vector2d center, extents;
 };

@@ -36,5 +36,5 @@ global.onError = () ->
     return false if shouldRebootVM()
   return true
 
-userHasQuit = () -> OS.hasQuit() or Controls.keyPressed(Keys.Escape) or Game.hasQuit()
-shouldRebootVM = () -> Controls.keyPressed('r')
+userHasQuit = () -> OS.hasQuit() or CONTROLS.keyPressed(Keys.Escape) or Game.hasQuit()
+shouldRebootVM = () -> CONTROLS.keyPressed('r')

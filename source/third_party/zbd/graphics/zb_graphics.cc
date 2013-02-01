@@ -9,3 +9,4 @@
 #include "internal/word_aligned_buffer.cc"
 #include "internal/graphics.cc"
 #include "internal/font.cc"
+#include "internal/default_resources.cc"

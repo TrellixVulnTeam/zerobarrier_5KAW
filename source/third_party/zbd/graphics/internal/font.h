@@ -15,6 +15,5 @@ namespace Font {
 }
 
 namespace Draw {
-  void TextWorld(const zbstring &text, vector2d topLeft, FontHandle font = Font::DefaultFont, const Color &color = Color::Black);
-  void TextUI(const zbstring &text, vector2d topLeft, FontHandle font = Font::DefaultFont, const Color &color = Color::Black);
+  void Text(const zbstring &text, vector2d topLeft, FontHandle font = Font::DefaultFont, const Color &color = Color::Black);
 }

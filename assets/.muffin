@@ -1,0 +1,62 @@
+[
+  # Only build content that has changed.
+  {
+    "command" : "build",
+    "jobs" : [
+      { "command" : "build_client_coffeescript" },
+      { "command" : "build_client_assets" }
+    ]
+  },
+
+  # Clean and build all content.
+  {
+    "command" : "full",
+    "jobs" : [
+      { "command" : "clean" },
+      { "command" : "build" }
+    ]
+  },
+
+  # Delete all cooked content and temporary content.
+  {
+    "command" : "clean",
+    "jobs" : [
+      { "script" : "rmdir.py", "vars" : { "dirs" : ["$(TEMPDIR)", "$(OUTDIR)"] }}
+    ]
+  },
+
+  # Build all client coffeescript.
+  {
+    "command" : "build_client_coffeescript",
+    "jobs" : [
+      { "script" : "activate_files.py", "vars" : {
+          "modified_only" : true,
+          "write_timestamps" : true,
+          "with_extensions" : [".coffee"],
+          "source_dirs" : ["$(ASSETDIR)/../source/client/coffeescript", "$(ASSETDIR)/../source/shared/coffeescript"]
+        }
+      },
+
+      { "script" : "coffee_to_js.py", "vars" : {
+          "path_to_nodejs" : "$(ASSETDIR)/../source/third_party/nodejs/node",
+          "path_to_coffee" : "$(ASSETDIR)/../source/third_party/coffeescript/bin/coffee",
+          "output_subdir" : "js/"
+        }
+      }
+    ]
+  },
+
+  # Build all client assets, flat copy for now.
+  {
+    "command" : "build_client_assets",
+    "jobs" : [
+      { "script" : "activate_files.py", "vars" : {
+          "modified_only" : true,
+          "write_timestamps" : true,
+          "without_extensions" : [".muffin"]
+        }
+      },
+      { "script" : "write_files.py" }
+    ]
+  }
+]

@@ -1,3 +1,6 @@
+//
+// See copyright notice in zbd.h.
+//
 
 #include "zb_thread.h"
 

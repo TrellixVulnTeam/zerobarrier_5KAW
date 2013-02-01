@@ -9,6 +9,7 @@ ZB_NAMESPACE_BEGIN
 class Color {
 public:
   Color(void);
+  Color(i32 combined);
   Color(f32 red, f32 green, f32 blue, f32 alpha);
   Color(f32 red, f32 green, f32 blue);
 

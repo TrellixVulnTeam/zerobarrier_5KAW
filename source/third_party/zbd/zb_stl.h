@@ -27,6 +27,7 @@ ZB_NAMESPACE_BEGIN
 #define zbvector(...) std::vector<__VA_ARGS__>
 #define zblist(...) std::list<__VA_ARGS__>
 #define zbmap(...) std::map<__VA_ARGS__>
+#define zbpair(...) std::pair<__VA_ARGS__>
 #define zbset(...) std::set<__VA_ARGS__>
 #define zbhashmap(...) stdext::hash_map<__VA_ARGS__>
 #define zbmin(...) std::min(__VA_ARGS__)

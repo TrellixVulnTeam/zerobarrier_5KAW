@@ -1,0 +1,22 @@
+# This is an example .muffin file that grabs some of the files in the asset directory and zips
+# them up.
+
+# A .muffin file consists of a json array filled with commands that can be executed by muffinman.
+# Each command is a series of jobs that are executed in the order they are specified.
+
+# As jobs execute, they may add or remove files from the global file store. In this way the jobs
+# can generate new content, replace content, package content, and filter content as they execute.
+
+# For example, the activate_files job will add all files (and subdirectory files) that match
+# the give pattern to the ActiveFiles list. Then, the zip job will run, adding all the files that
+# are in the ActiveFiles to an archive.
+[
+  {
+    "command" : "package",
+    "jobs" :
+    [
+      { "script" : "activate_files.py", "vars" : { "with_extensions" : [".py", ".muffin"] }},
+      { "script" : "zip.py", "vars" : { "output" : "muffinman.zip" }}
+    ]
+  }
+]

@@ -10,8 +10,9 @@ global.config = (path) -> configs[path] ?= JSON.readfile('config/' + path + '.js
 global.log = (message) -> VM.log(message)
 
 VM.tick = () ->
-  @processDebugMessages()
-  @collectGarbage(20)
+  # These are interfering with having a stable framerate, disabled until they're needed...
+  #@processDebugMessages()
+  #@collectGarbage(20)
   return null
 
 global.help = (obj) ->

@@ -25,6 +25,7 @@ public:
   vector3d GetLocation(void) const;
   f32 GetZoom(void) const;
   const aabb2d& GetViewport(void) const;
+  aabb2d GetViewportWorldBounds(void);
   vector2d ViewportToWorld(vector2d position);
 
   void OrthoProjection(void);

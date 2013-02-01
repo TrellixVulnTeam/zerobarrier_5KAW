@@ -20,7 +20,7 @@ bool ThreadContext::start(void) {
   return threadId != zb_thread::InvalidHandle;
 }
 
-void ThreadContext::stop(seconds countdown) {
+void ThreadContext::stop(u32 countdown) {
   if(threadId == zb_thread::InvalidHandle) {
     return;
   }

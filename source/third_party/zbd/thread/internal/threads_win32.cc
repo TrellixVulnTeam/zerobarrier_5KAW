@@ -8,7 +8,7 @@ namespace zb_thread {
     _endthreadex(returnValue);
   }
 
-  void stop(ThreadHandle th, seconds countdown) {
+  void stop(ThreadHandle th, u32 countdown) {
     defend (th != InvalidHandle);
     WaitForSingleObjectEx(th, static_cast<DWORD>(countdown == ThreadInfiniteWait ? ThreadInfiniteWait : countdown * 1000), FALSE);
     CloseHandle(th);

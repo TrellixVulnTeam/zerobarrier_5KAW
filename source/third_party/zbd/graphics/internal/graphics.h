@@ -56,7 +56,7 @@ public:
   , currentEffect(0x0)
   , currentEffectHasChanges(true)
   , nextTextureHandle(1)
-  , currentTechniqueIndex(0) {
+  , currentTechniqueIndex(-1) {
       renderCommandReader = &commandBuffers[0];
       renderCommandWriter = &commandBuffers[1];
       resourceCommandReader = &resourceBuffers[0];
@@ -174,6 +174,7 @@ extern RenderThread *RENDERTHREAD;
 namespace Draw {
   void Point(const vector2d &a, const Color &color = Color::Black);
   void Line(const vector2d &a, const vector2d &b, const Color &color = Color::Black);
+  void ThickLine(const vector2d &a, const vector2d &b, f32 thickness = 2.0f, const Color &color = Color::Black);
   void Arrow(const vector2d &start, const vector2d &end, const Color &color = Color::Black, f32 arrowLength = 8.0f, degrees arrowAngle = 30.0f);
   void Triangle(vector2d a, vector2d b, vector2d c, const Color &color = Color::Black, bool fill = false);
   void Rect(const aabb2d &rect, const Color &color = Color::Black, bool fill = false);

@@ -40,8 +40,11 @@ namespace Font {
 }
 
 namespace Draw {
-  void Text(const zbstring &text, const vector2d &topLeft, const Font::FixedWidthFont &font, const Color &color) {
+  void Text(const zbstring &text, vector2d topLeft, FontHandle handle, const Color &color) {
     ProfileStart("GFX::Text");
+    const Font::FixedWidthFont &font = MapFindGuaranteed(Font::fonts, handle);
+    topLeft += vector2d(font.glyphDimensions.x / 2.0f, -font.glyphDimensions.y / 2.0f);
+
     RENDERTHREAD->SetTexture(font.texture, 0);
 
     transform2d transform;
@@ -61,16 +64,7 @@ namespace Draw {
       TexturedQuad(transform, coords, color);
       transform.Translate(font.glyphDimensions.x, 0.0f);
     }
+
     ProfileStop();
-  }
-
-  void TextWorld(const zbstring &text, vector2d topLeft, FontHandle handle, const Color &color) {
-    const Font::FixedWidthFont &font = MapFindGuaranteed(Font::fonts, handle);
-    Text(text, topLeft + vector2d(font.glyphDimensions.x / 2.0f, -font.glyphDimensions.y / 2.0f), font, color);
-  }
-
-  void TextUI(const zbstring &text, vector2d topLeft, FontHandle handle, const Color &color) {
-    const Font::FixedWidthFont &font = MapFindGuaranteed(Font::fonts, handle);
-    Text(text, topLeft + vector2d(font.glyphDimensions.x / 2.0f, font.glyphDimensions.y / 2.0f), font, color);
   }
 }

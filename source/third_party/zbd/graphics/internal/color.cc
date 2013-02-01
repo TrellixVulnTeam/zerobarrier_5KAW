@@ -13,11 +13,19 @@ const Color Color::Teal(0.0f, 0.5f, 0.5f, 1.0f);
 const Color Color::Magenta(1.0f, 0.0f, 1.0f, 1.0f);
 const Color Color::Invisible(0.0f, 0.0f, 0.0f, 0.0f);
 
-Color::Color(void) 
+Color::Color(void)
 : r(0.0f)
 , g(0.0f)
 , b(0.0f)
 , a(1.0f) {
+  // Do nothing.
+}
+
+Color::Color(i32 combined)
+: r(((combined & 0xff000000) >> 24) / 255.0f)
+, g(((combined & 0x00ff0000) >> 16) / 255.0f)
+, b(((combined & 0x0000ff00) >> 8) / 255.0f)
+, a(((combined & 0x000000ff) >> 0) / 255.0f) {
   // Do nothing.
 }
 

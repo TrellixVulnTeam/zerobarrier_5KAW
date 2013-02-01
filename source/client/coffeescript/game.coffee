@@ -1,14 +1,15 @@
 Game =
   cameraA: GFX.NewCamera(),
-  cameraB: GFX.NewCamera(),
+  physicsEditor: PHYSICS.NewEditor(),
+
   init: () ->
-    quarterWidth = GFX.windowWidth() / 4.0
-    quarterHeight = GFX.windowHeight() / 4.0
-    @cameraA.initialize(quarterWidth, quarterHeight, quarterWidth, quarterHeight, 0, 32)
+    halfWidth = GFX.windowWidth() / 2.0
+    halfHeight = GFX.windowHeight() / 2.0
+    @cameraA.initialize(halfWidth, halfHeight, halfWidth, halfHeight, 0, 32)
     @cameraA.setLocation(0, 0, 32)
 
-    @cameraB.initialize(3 * quarterWidth, 3 * quarterHeight, quarterWidth, quarterHeight, 0, 32)
-    @cameraB.setLocation(0, 0, 32)
+    @physicsEditor.initialize(@cameraA)
+    @physicsEditorEnabled = false
 
     @tStart = 0
     @tEnd = 100
@@ -21,6 +22,12 @@ Game =
     null
 
   tick: () ->
+    if CONTROLS.keyPressed(Keys.F1)
+      @physicsEditorEnabled = !@physicsEditorEnabled
+
+    if @physicsEditorEnabled
+      @physicsEditor.tick()
+
     t = @tValue / (@tEnd - @tStart)
 
     GFX.setCamera(@cameraA)
@@ -35,20 +42,16 @@ Game =
 
     GFX.ngon((1-t) * 640 - 320, 80, 25, 4, 1, 1, 1, 1, 0.5 * t * 2.0 * 3.14, false)
     GFX.ngon((1-t) * 640 - 320, 80, 24, 4, 0, 0, 0, t, 0.5 * t * 2.0 * 3.14, true)
-    GFX.arrow(t * 640 - 320, 0, (1-t) * 640 - 320, 80, 1, 0, 0, 1, 8, 30)
+    GFX.thick_line(t * 640 - 320, 0, (1-t) * 640 - 320, 80, 5, 1, 0, 0, 1)
     GFX.rect((1-t) * 640 - 320, -80, 40, 15, 1, 1, 1, 1, false)
     GFX.arrow(t * 640 - 320, 0, (1-t) * 640 - 320, -80, 0, 1, 0, 1, 8, 30)
-
-    GFX.setCamera(@cameraB)
-    GFX.clear(@cameraB, 0.5, 0.0, t*0.5, 1)
-    GFX.setTechnique(1)
-    GFX.textWorld("Welcome to the Slam Jam!", -320, 180, 1, 0.0, 0.0, 0.0, 0.2 + (1-t) * 0.8)
-    GFX.textWorld("Real Time: " + TIME.stamp(), -320, 167, 1, 1.0, 1.0, 0.0, 1.0)
-    GFX.textWorld("Zooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooom", -320, 154, 1, 0.0, 1.0, 0.0, 1.0)
 
     @tValue += @direction
     if @tValue <= @tStart or @tValue >= @tEnd
       @direction *= -1
+
+    if @physicsEditorEnabled
+      @physicsEditor.draw()
 
     PROF.draw(@cameraA)
 

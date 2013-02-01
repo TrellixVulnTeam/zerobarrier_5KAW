@@ -15,7 +15,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\third_party\zbd\controls\zb_controls.cc" />
     <ClCompile Include="..\..\third_party\zbd\framework\zb_client_framework.cc" />
+    <ClCompile Include="..\..\third_party\zbd\graphics\zb_graphics.cc" />
+    <ClCompile Include="..\..\third_party\zbd\io\zb_io.cc" />
+    <ClCompile Include="..\..\third_party\zbd\math\zb_math.cc" />
+    <ClCompile Include="..\..\third_party\zbd\physics\zb_physics.cc" />
+    <ClCompile Include="..\..\third_party\zbd\profile\zb_profile.cc" />
+    <ClCompile Include="..\..\third_party\zbd\script\zb_script.cc" />
+    <ClCompile Include="..\..\third_party\zbd\thread\zb_thread.cc" />
+    <ClCompile Include="..\..\third_party\zbd\time\zb_time.cc" />
+    <ClCompile Include="..\..\third_party\zbd\zbd.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\third_party\zbd\framework\zb_client_framework.h" />

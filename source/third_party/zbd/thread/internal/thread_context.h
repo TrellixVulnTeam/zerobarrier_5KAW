@@ -19,7 +19,7 @@ public:
   // Main thread
   bool start(void);
   void request_stop(void);
-  void stop(seconds countdown = zb_thread::ThreadInfiniteWait);
+  void stop(u32 countdown = zb_thread::ThreadInfiniteWait);
   bool running(void);
 
   // Second thread

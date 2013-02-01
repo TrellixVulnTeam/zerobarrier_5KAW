@@ -12,7 +12,7 @@ namespace zb_thread {
   typedef  u32 (THREAD_ENTRY_DECORATION *ThreadEntryFunction)(void*);
   ThreadHandle start(ThreadEntryFunction entry, void *userdata);
   void exit(u32 returnValue);
-  void stop(ThreadHandle th, seconds countdown);
+  void stop(ThreadHandle th, u32 countdown);
 }
 
 #include "internal/thread_context.h"
